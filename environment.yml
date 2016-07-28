@@ -1,8 +1,5 @@
-name: arsbot
+name: kydo
 dependencies:
 - python=2.7
+- requests
 - pip
-- pip:
-    - chatterbot
-    - python-levenshtein
-    - cobe
