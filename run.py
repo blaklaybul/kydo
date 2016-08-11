@@ -1,4 +1,6 @@
 from app.kydo import create_app
 
-app = create_app()
-app.run(debug=True, threaded=True)
+prep = create_app()
+app = prep[0]
+socketio = prep[1]
+socketio.run(app)

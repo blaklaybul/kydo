@@ -10,7 +10,9 @@ Run `conda env update` to update the environment to reflect the latest changes t
 
 ## Running the app
 
-Activate the conda environment with `source activate kydo` and execute `python run.py`
+Activate the conda environment with `source activate kydo` and execute `python app/run_kydo.py`
+
+Go to `localhost:3000` and authenticate your twitter account. You will be redirected to the console and it will begin print tweets corresponding to tracked users, keywords, and hashtags. 
 
 ## quiting the app
 
