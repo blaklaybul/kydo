@@ -16,7 +16,7 @@ consumer_key = 'KQpbFTXBvqitcnxkEBUYW0gbQ'
 consumer_secret = 'DSgulGZjMeNGEjz7NRyVSLkfCRYjBqY17msB79N10D2cXwoadc'
 callback = "http://localhost:3000/adminConsole"
 follow = ["736205517987676160"]
-track = ["guitarrr"]
+track = ["arselectronica", "#arselectronica"]
 
 class KydoStreamListener(tweepy.StreamListener):
 
