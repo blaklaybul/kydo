@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <style>
+        .alive {
+            background-color: green;
+        }
+
+        .dead {
+            background-color: red;
+        }
+    </style>
+
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script>
@@ -11,13 +22,43 @@
     socket = io.connect('http://' + document.domain + ':' + location.port);
 
     socket.on('channela', function(message) {
-        $("#tweetList").append("<div><p>"+message["message"]+"</p><p>"+message["other"]+"</p></div>")
+        $("#tweetList").append("<tr><td>"+message["message"]+"</td><td>"+message["other"]+"</td></tr>");
+        socket.emit("hihi", {data : "HI"});
+        console.log(message["status"]);
         });
     });
     </script>
+    <script>
+        $(function() {
+            $('#killer').bind('click', function() {
+                $.getJSON('/kill', {
+                }, function(data) {
+                    console.log(data);
+                    $("#killed").text(data.kill_status);
+                    if (data.kill_status === false){
+                        $("#killHead").attr('class', 'alive');
+                    } else {
+                        $("#killHead").attr('class', 'dead');
+                    }
+                });
+                return false;
+                });
+            });
+    </script>
   </head>
 <body>
-    <div id=tweetList>
+    <div id="killHead"  class = "alive">
+    <label id="killer" class="btn btn-default btn-inverse" >
+        KILL
+    </label>
+    <div id="killed">False</div>
     </div>
+
+    <table class="table table-hover" id=tweetList>
+        <tr>
+                <th>Tweet</th>
+                <th>Kydo Response</th>
+        </tr>
+    </table>
 </body>
 </html>
