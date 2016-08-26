@@ -17,6 +17,7 @@ dependencies:
   - greenlet==0.4.10
   - itsdangerous==0.24
   - jinja2==2.8
+  - markovify==0.4.0
   - markupsafe==0.23
   - nltk==3.2.1
   - oauthlib==1.1.2
@@ -26,5 +27,6 @@ dependencies:
   - requests-oauthlib==0.6.2
   - six==1.10.0
   - tweepy==3.5.0
+  - unidecode==0.4.19
   - werkzeug==0.11.10
 

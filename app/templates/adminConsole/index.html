@@ -4,12 +4,20 @@
     <link href="/static/css/bootstrap.css" rel="stylesheet">
 
     <style>
-        .alive {
-            background-color: green;
+        div.alive {
+            background-color: #ccffcc;
         }
 
-        .dead {
-            background-color: red;
+        div.dead {
+            background-color: #ffcccc;
+        }
+
+        tr.alive{
+            color: black;
+        }
+
+        tr.dead{
+            color: #bfbfbf;
         }
     </style>
 
@@ -19,31 +27,36 @@
     $(document).ready(function() {
     WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
     WEB_SOCKET_DEBUG = true;
+    status = "alive";
     socket = io.connect('http://' + document.domain + ':' + location.port);
 
     socket.on('channela', function(message) {
-        $("#tweetList").append("<tr><td>"+message["message"]+"</td><td>"+message["other"]+"</td></tr>");
+        $("#tweetList").append("<tr class = "+status+"><td>"+message["message"]+"</td><td>"+message["other"]+"</td></tr>");
         socket.emit("hihi", {data : "HI"});
         console.log(message["status"]);
         });
     });
-    </script>
-    <script>
-        $(function() {
-            $('#killer').bind('click', function() {
-                $.getJSON('/kill', {
-                }, function(data) {
-                    console.log(data);
-                    $("#killed").text(data.kill_status);
-                    if (data.kill_status === false){
-                        $("#killHead").attr('class', 'alive');
-                    } else {
-                        $("#killHead").attr('class', 'dead');
-                    }
-                });
-                return false;
-                });
+
+    $(function() {
+        $('#killer').bind('click', function() {
+            $.getJSON('/kill', {
+            }, function(data) {
+                console.log(data);
+                $("#killed").text(data.kill_status);
+                if (data.kill_status === false){
+                    $("#killHead").attr('class', 'alive');
+                } else {
+                    $("#killHead").attr('class', 'dead');
+                };
+                if (data.kill_status === false){
+                    status="alive";
+                } else {
+                    status="dead";
+                }
             });
+            return false;
+            });
+        });
     </script>
   </head>
 <body>
