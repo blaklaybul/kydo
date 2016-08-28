@@ -1,0 +1,19 @@
+body {
+    font: 11px sans-serif;
+}
+
+div.alive {
+    background-color: #ccffcc;
+}
+
+div.dead {
+    background-color: #ffcccc;
+}
+
+tr.alive{
+    color: black;
+}
+
+tr.dead{
+    color: #bfbfbf;
+}
