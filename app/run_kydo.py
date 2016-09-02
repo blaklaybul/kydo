@@ -7,6 +7,7 @@ from flask_socketio import SocketIO, emit
 import tweepy
 import markovify
 import json
+import threading, time, random
 from cobe.brain import Brain
 import HTMLParser
 
@@ -24,15 +25,53 @@ streams = []
 
 account_name = "barstholemew"
 follow = ["1884142105", "14305066"]
-track = ["arselectronica", "#arselectronica16",
-        "#mediaarts", "#electronicArt", "artificial intelligence",
-        "#artificialintelligence"]
+track = ["arselectronica", "#arselectronica16", "&quot;ars electronica&quot;",
+        "&quot;artificial intelligence&quot;", "#artificialintelligence",
+        "#mediaarts", "#mediaart", "#newmedia", "#mixedmediaart, ""#electronicArt",
+        "#digitalart", "#digitalartist", "&quot;digital art&quot;", "&quot;new media&quot;",
+        "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"]
 
 media_tweeted = []
 
 # put a list of hashtags here
 hashtags_to_add = []
 terms_replace = []
+
+class TimedTweets(object):
+    """
+        This threaded obvject
+    """
+    def __init__(self, api, interval=1):
+
+        # set the interval, in seconds
+        self.interval = interval
+        self.api = api
+        thread = threading.Thread(target=self.run)
+        thread.start()
+
+    def checkSec(self):
+        pass
+
+    def run(self):
+        """This one gun run, son"""
+
+        while True:
+
+            if int(round(time.time(),0))%3600==0:
+                flipper = random.random()
+                if flipper < 0.25:
+                    self.api.update_status(status="Do you think I'm human? #arselectronica16")
+                elif if flipper < 0.5:
+                    self.api.update_status(status="Do you think I'm a machine? #arselectronica16")
+                elif if flipper < 0.75:
+                    self.api.update_status(status="What's your favorite panel so far? #arselectronica16")
+                else:
+                    self.api.update_status(status="What's your favorite artwork at #arselectronica16 ?")
+            else:
+                print ":()"
+            time.sleep(self.interval)
+
+
 
 class TweetGenerator(markovify.Text):
 
@@ -52,8 +91,8 @@ class KydoStreamListener(tweepy.StreamListener):
 
     statusnum = 0
     kill = True
-    working = False
     brain_file = 'cobe.brain'
+    brain = Brain(brain_file)
 
     # with open("app/clean/dfw.txt", "r") as g:
     #     dfw = g.read()
@@ -70,7 +109,6 @@ class KydoStreamListener(tweepy.StreamListener):
 
     # here are the two brains, choose one
     # Tweeter = markovify.combine([dfw_model, hesse_model, mcl_model], [1,1,1])
-    brain = Brain(brain_file)
 
     def killSwitch(self):
         self.kill = not self.kill
@@ -87,51 +125,46 @@ class KydoStreamListener(tweepy.StreamListener):
 
         self.statusnum += 1
 
-        # when to retweet
+        # return if it's kydo's tweet
+        if status.user.name == account_name:
+            return
 
-        # when to reply
-
-        # when to fave
-        print status
-
+        # learn the new tweet, if it's english
         if status._json["lang"]=="en":
             self.brain.learn(status.text)
 
+        # create messafe for console, and websocket
         server_message = status.user.name + " says: " + status.text
         server_message = server_message.encode("utf-8")
         print "# ", str(self.statusnum), " ", server_message
 
-        # we don't want to trigger our own tweets
-        if status.user.name != account_name:
-            # ALL THE LOGIC AROUND WHAT KIND OF TWEET TO GENERATE GOES HERE
+        # only create english tweets
+        if status._json["lang"]=="en":
+            cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 99))
+        else:
+            cobe_rep = "Sorry, I only speak english."
 
-            # only create english tweets
-            if status._json["lang"]=="en":
-                cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 99))
+        # prevent tweets from ending with "..."
+        if cobe_rep.split()[-1].endswith((u'\u2026',"...")):
+            remove_last = cobe_rep.split()
+            del remove_last[-1]
+            cobe_rep= " ".join(remove_last)
+
+
+
+        if cobe_rep and self.kill == False:
+            if "@barstholemewtwo" in mentions:
+                self.api.update_status(status=cobe_rep, in_reply_to_status_id=status.id)
+            elif status._json.get("retweeted_status"):
+                try:
+                    self.api.retweet(status._json["id"])
+                except tweepy.TweepError as e:
+                    print "Tweet is a duplicate"
             else:
-                cobe_rep = "Sorry, I only speak english."
-
-            # prevent tweets from ending with "..."
-            if cobe_rep.split()[-1].endswith((u'\u2026',"...")):
-                remove_last = cobe_rep.split()
-                del remove_last[-1]
-                cobe_rep= " ".join(remove_last)
-
-
-
-            if cobe_rep and self.kill == False:
-                if "@barstholemewtwo" in status.text:
-                    self.api.update_status(status=cobe_rep, in_reply_to_status_id=status.id)
-                elif status._json.get("retweeted_status"):
-                    try:
-                        self.api.retweet(status._json["id"])
-                    except tweepy.TweepError as e:
-                        print "Tweet is a duplicate"
-                else:
-                    try:
-                        self.api.update_status(status=cobe_rep)
-                    except tweepy.TweepError as e:
-                        print "Tweet is a duplicate"
+                try:
+                    self.api.update_status(status=cobe_rep)
+                except tweepy.TweepError as e:
+                    print "Tweet is a duplicate"
 
             # create socket response
             esp = {
@@ -148,6 +181,7 @@ class KydoStreamListener(tweepy.StreamListener):
 # Visiting localhost:3000 will redirect to Twitter's app authorization page
 @app.route("/")
 def send_token():
+
     print "/ streams ", streams
     for stream in streams:
         stream.disconnect()
@@ -180,6 +214,12 @@ def kydo():
     kydoStreamListener = KydoStreamListener(api = tweepy.API(auth))
     kydoStream = tweepy.Stream(auth = auth, listener = kydoStreamListener)
     kydoStream.filter(follow=follow,track=track, async=True)
+
+    example = TimedTweets(tweepy.API(auth))
+    time.sleep(3)
+    print('Checkpoint')
+    time.sleep(2)
+    print('Bye')
 
     listeners.append(kydoStreamListener)
     streams.append(kydoStream)
