@@ -1,79 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <link href="/static/css/bootstrap.css" rel="stylesheet">
 
     <style>
-        div.alive {
-            background-color: #ccffcc;
-        }
-
-        div.dead {
-            background-color: #ffcccc;
-        }
-
-        tr.alive{
-            color: black;
-        }
-
-        tr.dead{
-            color: #bfbfbf;
-        }
     </style>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script>
-    $(document).ready(function() {
-        WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
-        WEB_SOCKET_DEBUG = false;
-        status = "dead";
-        socket = io.connect('http://' + document.domain + ':' + location.port);
-        tweet_id = null;
+        $(document).ready(function() {
+            WEB_SOCKET_SWF_LOCATION = "/static/WebSocketMain.swf";
+            WEB_SOCKET_DEBUG = false;
+            killStatus = '{{ killStatus }}';
 
-    socket.on('channela', function(message) {
-        $("#tweetList").append("<tr class=" + status + "><td tweet_id = " + message["status"]["id"] + ">"+message["status"]["created_at"]+"</td>"+message["status"]["created_at"]+"<td>" + message["message"] + "</td><td>" + message["other"] + "</td></tr>");
-        console.log(message["status"]);
-        });
+            // kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
+            console.log(killStatus)
+            if (killStatus) { kill_test = "KYDO IS SILENT"}
+            else {kill_test = "KYDO SPEAKS"}
 
-    $(function() {
-        $('#killer').bind('click', function() {
-            $.getJSON('/kill', {
-            }, function(data) {
-                console.log(data);
-                $("#killed").text(data.kill_status);
-                if (data.kill_status === false){
-                    $("#killHead").attr('class', 'alive');
-                } else {
-                    $("#killHead").attr('class', 'dead');
-                };
-                if (data.kill_status === false){
-                    status="alive";
-                } else {
-                    status="dead";
-                }
+            // socket = io.connect('http://' + document.domain + ':' + location.port);
+            tweet_id = null;
+
+            console.log(killStatus, kill_test);
+
+            $("#killed").text(kill_test);
+
+            if (killStatus === true) {
+                $("#killHead").attr('class', 'dead');
+            }
+            else {
+                $("#killHead").attr('class', 'alive');
+            };
+
+            // socket.on('channela', function(message) {
+            //     $("#tweetList").append("<tr class=" + status + "><td tweet_id = " + message["status"]["id"] + ">" + message["status"]["created_at"] + "</td>" + message["status"]["created_at"] + "<td>" + message["message"] +
+            //         "</td><td>" + message["other"] + "</td></tr>");
+            //     console.log(message["status"]);
+            // });
+
+            $(function() {
+                $('#killer').bind('click', function() {
+                    $.getJSON('/kill', {}, function(data) {
+                        console.log(data);
+                        killStatus = data.kill_status;
+                        kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
+                        $("#killed").text(kill_test);
+
+                    });
+                    return false;
+                });
             });
-            return false;
-            });
-        });
 
-    });
+        });
     </script>
-  </head>
+</head>
+
 <body>
-    <div id="killHead"  class = "dead">
-    <label id="killer" class="btn btn-default btn-inverse" >
+    <div id="killHead">
+        <label id="killer" class="btn btn-default btn-inverse">
         KILL
     </label>
-    <div id="killed"></div>
+        <div id="killed"></div>
     </div>
-
-    <table class="table table-hover" id=tweetList>
-        <tr>
-                <th>Time</th>
-                <th>Tweet</th>
-                <th>Kydo Response</th>
-        </tr>
-    </table>
 </body>
+
 </html>

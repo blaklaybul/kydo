@@ -12,63 +12,65 @@ from cobe.brain import Brain
 import HTMLParser
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 app.threaded = True
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, logger = True, engineio_logger = True)
-consumer_key = 'XRsPyaOyCUyjqpAm7DEKB8ivY'
-consumer_secret = '2CrhShR3bzsHPQpARENA5HJvrhj52DCgiI9dty7DBwD8ipYIFZ'
+socketio = SocketIO(app) #, logger = True, engineio_logger = True)
+
+consumer_key = 'FKYiQ0Hwmg2tmicDzn43Gd2fi'
+consumer_secret = 'KZuBQAzZzr2mLohkT22i8WuUmcrtsFTwcrA2GwnVYrlIk1xGuN'
+access_token = '772181462066012160-tLNrMb10touyHITYRWNHcVKqrbgIGv5'
+access_token_secret = 'LyFkCjNN8rNLQKB6yBnwkfHVwQhZxVA5cemPfUVmWFtoX'
+account_name = "kendrick_zeus"
+
+kydoStreamListener=None
+kydoStream=None
+
 callback = "http://localhost:3000/adminConsole"
 
 listeners = []
 streams = []
 
-account_name = "barstholemew"
-follow = ["1884142105", "14305066"]
-track = ["arselectronica", "#arselectronica16", "&quot;ars electronica&quot;",
-        "&quot;artificial intelligence&quot;", "#artificialintelligence",
-        "#mediaarts", "#mediaart", "#newmedia", "#mixedmediaart, ""#electronicArt",
-        "#digitalart", "#digitalartist", "&quot;digital art&quot;", "&quot;new media&quot;",
-        "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"]
+with open("rules.json") as g:
+    rules = json.load(g)
 
+# track information about the twitter account
+# follow=[]
+follow = [str(user["user_id"]) for user in rules["users"]["users"]]
+# track = ["@kendrick_zeus"]
+track = rules["hashtags"]
+
+# track media so we don't post duplicates?
 media_tweeted = []
 
-# put a list of hashtags here
-hashtags_to_add = []
-terms_replace = []
 
 class TimedTweets(object):
     """
-        This threaded obvject
+        This threaded object
     """
     def __init__(self, api, interval=1):
 
         # set the interval, in seconds
         self.interval = interval
         self.api = api
+        self.randomInterval = 1800 # one hour
+        self.pseudoInterval = 3600 # half hour
         thread = threading.Thread(target=self.run)
         thread.start()
-
-    def checkSec(self):
-        pass
 
     def run(self):
         """This one gun run, son"""
 
         while True:
 
-            if int(round(time.time(),0))%3600==0:
-                flipper = random.random()
-                if flipper < 0.25:
-                    self.api.update_status(status="Do you think I'm human? #arselectronica16")
-                elif if flipper < 0.5:
-                    self.api.update_status(status="Do you think I'm a machine? #arselectronica16")
-                elif if flipper < 0.75:
-                    self.api.update_status(status="What's your favorite panel so far? #arselectronica16")
-                else:
-                    self.api.update_status(status="What's your favorite artwork at #arselectronica16 ?")
-            else:
-                print ":()"
+            # choose random tweets based on a time interval
+            if int(round(time.time(),0)%self.randomInterval==0):
+                tweet = random.choice(rules["rules"]["timed"]["random"])
+                self.api.update_status(status=tweet)
+            if int(round(time.time(),0))%self.pseudoInterval==0:
+                tweet = random.choice(rules["rules"]["timed"]["pseudo"])
+                self.api.update_status(status=tweet)
+
             time.sleep(self.interval)
 
 
@@ -89,54 +91,71 @@ class TweetGenerator(markovify.Text):
 
 class KydoStreamListener(tweepy.StreamListener):
 
-    statusnum = 0
-    kill = True
+    kill = False
     brain_file = 'cobe.brain'
     brain = Brain(brain_file)
+    total_mes = 0
 
-    # with open("app/clean/dfw.txt", "r") as g:
-    #     dfw = g.read()
-    #
-    # with open("app/clean/hesse.txt", "r") as g:
-    #     hesse = g.read()
-    #
-    # with open("app/clean/mcluhan.txt", "r") as g:
-    #     mcl = g.read()
-    #
-    # dfw_model = TweetGenerator(dfw, state_size=3)
-    # hesse_model = TweetGenerator(hesse, state_size=3)
-    # mcl_model = TweetGenerator(mcl, state_size=3)
+    with open("app/clean/dfw.txt", "r") as g:
+        dfw = g.read()
+
+    with open("app/clean/hesse.txt", "r") as g:
+        hesse = g.read()
+
+    with open("app/clean/mcluhan.txt", "r") as g:
+        mcl = g.read()
+
+    dfw_model = TweetGenerator(dfw, state_size=3)
+    hesse_model = TweetGenerator(hesse, state_size=3)
+    mcl_model = TweetGenerator(mcl, state_size=3)
 
     # here are the two brains, choose one
-    # Tweeter = markovify.combine([dfw_model, hesse_model, mcl_model], [1,1,1])
+    Tweeter = markovify.combine([dfw_model, hesse_model, mcl_model], [1,1,1])
 
     def killSwitch(self):
         self.kill = not self.kill
 
     def on_status(self, status):
 
-        hashtags = ["#"+hashtag["text"] for hashtag in status.entities["hashtags"]]
-        urls = [url["url"] for url in status.entities["urls"]]
-        mentions = ["@"+user["screen_name"] for user in status.entities["user_mentions"]]
+        self.total_mes+=1
 
-        print "hashtags ", hashtags
-        print "urls ", urls
-        print "mentions ", mentions
-
-        self.statusnum += 1
+        # get status metadata
+        mentions = ["@"+user["screen_name"] for user in status.entities["user_mentions"] if status.entities["user_mentions"]]
+        hashtags = ["#"+hashtag["text"] for hashtag in status.entities["hashtags"] if status.entities["hashtags"] ]
+        urls = [url["url"] for url in status.entities["urls"] if status.entities["urls"]]
 
         # return if it's kydo's tweet
-        if status.user.name == account_name:
+        print "I AM: ", status.user.name
+        if status.user.screen_name == account_name:
             return
+
+        # we don't want to learn mentions.
+        status_rule = status.text
+        print status.text
+        for mention in mentions:
+            status_rule = status.text.replace(mention, "")
+        status_rule = " ".join(status_rule.split())
 
         # learn the new tweet, if it's english
         if status._json["lang"]=="en":
-            self.brain.learn(status.text)
+            self.brain.learn(status_rule)
 
-        # create messafe for console, and websocket
-        server_message = status.user.name + " says: " + status.text
-        server_message = server_message.encode("utf-8")
-        print "# ", str(self.statusnum), " ", server_message
+        print self.total_mes
+        if self.total_mes < 500:
+                return
+
+        print mentions
+        if not(str("@" + account_name) in mentions):
+            return
+
+        # now, strip out other shit to check against the rules.
+        for hashtag in hashtags:
+            status_rule = status.text.replace(hashtag, "")
+        for url in urls:
+            status_rule = status_rule.replace(url, "")
+        for mention in mentions:
+            status_rule = status_rule.replace(mention, "")
+        status_rule = " ".join(status_rule.split()).lower()
 
         # only create english tweets
         if status._json["lang"]=="en":
@@ -144,87 +163,80 @@ class KydoStreamListener(tweepy.StreamListener):
         else:
             cobe_rep = "Sorry, I only speak english."
 
+        # now, check the status for rule conditions
+        # check if string is in EQUALS
+        if status_rule in rules["rules"]["canned"]["EQUALS"]:
+            cobe_rep = rules["rules"]["canned"]["EQUALS"][status_rule]["response"]
+
+        # check for begins with relation
+        for keyword in rules["rules"]["canned"]["BEGINS WITH"]:
+            if status_rule.startswith(keyword):
+                cobe_rep = rules["rules"]["canned"]["BEGINS WITH"][keyword]["response"]
+
+        for keyword in rules["rules"]["canned"]["ENDS WITH"]:
+            if status_rule.endswith(keyword):
+                cobe_rep = rules["rules"]["canned"]["ENDS WITH"][keyword]["response"]
+
+        for keyword in rules["rules"]["canned"]["IN"]:
+            if keyword in status_rule:
+                cobe_rep = rules["rules"]["canned"]["IN"][keyword]["response"]
+
+        # create message for console, and websocket
+        server_message = status.user.screen_name + " says: " + status.text
+        server_message = server_message.encode("utf-8")
+        # print "# ", server_message
+
         # prevent tweets from ending with "..."
         if cobe_rep.split()[-1].endswith((u'\u2026',"...")):
             remove_last = cobe_rep.split()
             del remove_last[-1]
             cobe_rep= " ".join(remove_last)
 
-
-
         if cobe_rep and self.kill == False:
-            if "@barstholemewtwo" in mentions:
+            if str("@" + account_name) in mentions:
+                cobe_rep = "@" + status.user.screen_name + " " + cobe_rep
+                cobe_rep.replace("@"+status.user.screen_name,"")
                 self.api.update_status(status=cobe_rep, in_reply_to_status_id=status.id)
+                return
             elif status._json.get("retweeted_status"):
                 try:
                     self.api.retweet(status._json["id"])
+                    return
                 except tweepy.TweepError as e:
-                    print "Tweet is a duplicate"
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=90)
+                    self.api.update_status(status=cobe_rep)
+                    return
             else:
                 try:
                     self.api.update_status(status=cobe_rep)
+                    return
                 except tweepy.TweepError as e:
-                    print "Tweet is a duplicate"
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=90)
+                    self.api.update_status(status=cobe_rep)
+                    return
 
-            # create socket response
-            esp = {
-                "message": server_message,
-                "other": cobe_rep,
-                "kill" : self.kill,
-                "status": status._json
-            }
-            print server_message, " /// ", cobe_rep
+        # create socket response
+        esp = {
+            "message": server_message,
+            "other": cobe_rep,
+            "kill" : self.kill,
+            "status": status._json
+        }
+        print server_message, " /// ", cobe_rep
 
-            # something is haning on the emit
-            socketio.emit("channela", esp)
+        # something is haning on the emit
+        socketio.emit("channela", esp)
 
-# Visiting localhost:3000 will redirect to Twitter's app authorization page
-@app.route("/")
-def send_token():
-
-    print "/ streams ", streams
-    for stream in streams:
-        stream.disconnect()
-    session["consumers"] = (consumer_key, consumer_secret)
-    session["callback"] = callback
-    auth = tweepy.OAuthHandler(consumer_key,
-            consumer_secret,
-            callback)
-    redirect_url =  auth.get_authorization_url()
-    session["request_token"] = auth.request_token
-    return redirect(redirect_url)
-
-@app.route("/adminConsole", methods=['GET','POST'])
+@app.route("/", methods=['GET','POST'])
 def kydo():
-    print "/admin streams ", streams
 
-    request_token = session["request_token"]
-    del session["request_token"]
+    kydoStatus = kydoStreamListener.kill
+    if kydoStatus:
+        print "KYDO IS DEAD"
+    else:
+        print "KYDO SPEAKS"
 
-    consumer_key = session["consumers"][0]
-    consumer_secret = session["consumers"][1]
-    callback = session["callback"]
-
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret, callback)
-    auth.request_token = request_token
-    verifier = request.args.get("oauth_verifier")
-    auth.get_access_token(verifier)
-    session["token"] = (auth.access_token, auth.access_token_secret)
-
-    kydoStreamListener = KydoStreamListener(api = tweepy.API(auth))
-    kydoStream = tweepy.Stream(auth = auth, listener = kydoStreamListener)
-    kydoStream.filter(follow=follow,track=track, async=True)
-
-    example = TimedTweets(tweepy.API(auth))
-    time.sleep(3)
-    print('Checkpoint')
-    time.sleep(2)
-    print('Bye')
-
-    listeners.append(kydoStreamListener)
-    streams.append(kydoStream)
-
-    return render_template('adminConsole/index.html')
+    return render_template('adminConsole/index.html', killStatus = kydoStatus)
 
 @app.route("/kill", methods=['GET','POST'])
 def kill():
@@ -243,5 +255,27 @@ def hihi(message):
     pass
     # print "[x] Received\t: ", message
 
+def getKydoGoing():
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+
+    print "IM HERE."
+
+    global kydoStreamListener
+    kydoStreamListener = KydoStreamListener(api = tweepy.API(auth))
+    global kydoStream
+    kydoStream = tweepy.Stream(auth = auth, listener = kydoStreamListener)
+    kydoStream.filter(follow=follow,track=track, async=True)
+
+    example = TimedTweets(tweepy.API(auth))
+    time.sleep(3)
+    print('Checkpoint')
+    time.sleep(2)
+    print('Bye')
+
+    listeners.append(kydoStreamListener)
+    streams.append(kydoStream)
+
 if __name__ == '__main__':
+    getKydoGoing()
     socketio.run(app, port=3000)
