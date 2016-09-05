@@ -6,6 +6,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import tweepy
 import markovify
+import logging
 import json
 import threading, time, random
 from cobe.brain import Brain
@@ -25,6 +26,8 @@ account_name = "kendrick_zeus"
 
 kydoStreamListener=None
 kydoStream=None
+
+callback = "http://localhost:3000/adminConsole"
 
 listeners = []
 streams = []
@@ -51,7 +54,7 @@ class TimedTweets(object):
         # set the interval, in seconds
         self.interval = interval
         self.api = api
-        self.randomInterval = 1800 # one hour
+        self.randomInterval = 30 # one hour
         self.pseudoInterval = 3600 # half hour
         thread = threading.Thread(target=self.run)
         thread.start()
@@ -94,13 +97,13 @@ class KydoStreamListener(tweepy.StreamListener):
     brain = Brain(brain_file)
     total_mes = 0
 
-    with open("app/clean/dfw.txt", "r") as g:
+    with open("dfw.txt", "r") as g:
         dfw = g.read()
 
-    with open("app/clean/hesse.txt", "r") as g:
+    with open("hesse.txt", "r") as g:
         hesse = g.read()
 
-    with open("app/clean/mcluhan.txt", "r") as g:
+    with open("mcluhan.txt", "r") as g:
         mcl = g.read()
 
     dfw_model = TweetGenerator(dfw, state_size=3)
@@ -188,12 +191,10 @@ class KydoStreamListener(tweepy.StreamListener):
             del remove_last[-1]
             cobe_rep= " ".join(remove_last)
 
-        print cobe_rep
-
         if cobe_rep and self.kill == False:
             if str("@" + account_name) in mentions:
                 if cobe_rep == duplicate:
-                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=93)
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
                 cobe_rep = "@" + status.user.screen_name + " " + cobe_rep
                 cobe_rep = cobe_rep.replace("@"+account_name,"")
                 self.api.update_status(status=cobe_rep, in_reply_to_status_id=status.id)
@@ -229,23 +230,27 @@ class KydoStreamListener(tweepy.StreamListener):
 
 @application.route("/", methods=['GET','POST'])
 def kydo():
+    if kydoStreamListener is not None:
+        kydoStatus = kydoStreamListener.kill
+    else:
+        kydoStatus = False
 
-    kydoStatus = kydoStreamListener.kill
     print kydoStatus
+
     if kydoStatus:
         print "KYDO IS DEAD"
     else:
         print "KYDO SPEAKS"
 
-    return render_template('adminConsole/index.html', killStatus = kydoStatus)
+    return render_template('index.html', killStatus = kydoStatus)
 
 @application.route("/kill", methods=['GET','POST'])
 def kill():
+    status = False
     for listener in listeners:
         listener.killSwitch()
         status = listener.kill
     kill_status = {"kill_status": status}
-    print kill_status
     return json.dumps(kill_status)
 
 def getKydoGoing():
@@ -262,9 +267,9 @@ def getKydoGoing():
 
     example = TimedTweets(tweepy.API(auth))
     time.sleep(3)
-    print('Checkpoint')
+    print 'Checkpoint'
     time.sleep(2)
-    print('Bye')
+    print 'Bye'
 
     listeners.append(kydoStreamListener)
     streams.append(kydoStream)
