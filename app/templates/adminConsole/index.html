@@ -5,6 +5,12 @@
     <link href="static/css/bootstrap.css" rel="stylesheet">
 
     <style>
+        .killed {
+            background-color: gray !important;
+        }
+        .alive {
+            background-color: green !important;
+        }
     </style>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
@@ -14,10 +20,34 @@
             killStatus = '{{ killStatus }}';
             kill_test = ""
             // kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
-            console.log(killStatus)
+            // console.log(killStatus)
 
-            if (killStatus) { kill_test = "KYDO IS SILENT"}
-            else {kill_test = "KYDO SPEAKS"}
+            function updateStatus() {
+                if (killStatus === true) { 
+                $("#killed").removeClass( "killed alive") 
+                $("#killed").addClass( "killed") 
+                kill_test = "KYDO IS SILENT"
+                $("#killed").text(kill_test);
+                }
+            else {
+                $("#killed").removeClass( "killed alive") 
+                $("#killed").addClass( "alive") 
+                kill_test = "KYDO SPEAKS"
+                $("#killed").text(kill_test);
+            }
+            }
+
+            var refreshId = setInterval(function() {
+
+            
+                updateStatus();
+                // console.log(killStatus)
+                // $("#killed").text(kill_test);
+
+            }, 1000);
+
+
+            
 
             console.log(killStatus, kill_test);
 
@@ -28,13 +58,15 @@
                     $.getJSON('/kill', {}, function(data) {
                         console.log(data);
                         killStatus = data.kill_status;
-                        kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
-                        $("#killed").text(kill_test);
+                        
+                        updateStatus();
+
 
                     });
                     return false;
                 });
             });
+
 
         });
     </script>
