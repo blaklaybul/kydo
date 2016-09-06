@@ -258,6 +258,13 @@ def kill():
     print kill_status
     return json.dumps(kill_status)
 
+@application.route("/deadOrAlive", methods=['GET','POST'])
+def deadOrAlive():
+    for listener in listeners:
+        status = listener.kill
+    kill_status = {"kill_status": status}
+    return json.dumps(kill_status)
+
 def getKydoGoing():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
