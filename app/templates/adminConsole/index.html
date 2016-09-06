@@ -20,18 +20,18 @@
             killStatus = '{{ killStatus }}';
             kill_test = ""
                 // kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
-            console.log(killStatus)
+            // console.log(killStatus)
 
-            if (killStatus) {
-                kill_test = "KYDO IS SILENT"
-            } else {
-                kill_test = "KYDO SPEAKS"
-            }
             // kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
             // console.log(killStatus)
 
             function updateStatus() {
-                if (killStatus === true) {
+                $.getJSON('/deadOrAlive', {}, function(data) {
+
+                    // killStatus = data.kill_status;
+                    // console.log(data.kill_status)
+
+                if (data.kill_status === true) {
                 $("#killed").removeClass( "killed alive")
                 $("#killed").addClass( "killed")
                 kill_test = "KYDO IS SILENT"
@@ -43,6 +43,7 @@
                 kill_test = "KYDO SPEAKS"
                 $("#killed").text(kill_test);
             }
+        });
             }
 
             var refreshId = setInterval(function() {
@@ -55,9 +56,9 @@
             }, 1000);
 
 
-            console.log(killStatus, kill_test);
+            // console.log(killStatus, kill_test);
 
-            $("#killed").text(kill_test);
+            // $("#killed").text(kill_test);
 
             $(function() {
                 $('#killer').bind('click', function() {

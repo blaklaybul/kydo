@@ -24,8 +24,8 @@ access_token_secret = 'LyFkCjNN8rNLQKB6yBnwkfHVwQhZxVA5cemPfUVmWFtoX'
 account_name = "kendrick_zeus"
 followee = "barstholemewtwo"
 
-# probability that kydo will like a tweet
-favorite_chance = 0.5
+# probability that kydo will like a tweet, 1-this is prob he will quote it
+favorite_chance = 0.9
 
 kydoStreamListener=None
 kydoStream=None
@@ -117,6 +117,9 @@ class KydoStreamListener(tweepy.StreamListener):
     def on_status(self, status):
 
         self.total_mes+=1
+        FOR_TESTING = random.random()
+
+        print "message:", str(self.total_mes), "    chance: ", str(FOR_TESTING)
 
         # get status metadata
         mentions = ["@"+user["screen_name"] for user in status.entities["user_mentions"] if status.entities["user_mentions"]]
@@ -128,22 +131,35 @@ class KydoStreamListener(tweepy.StreamListener):
             return
 
         # first, lets do proactivity
+        if FOR_TESTING < 0.05:
+            try:
+                cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 50)
+                quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                tweet = cobe_rep + " " + quote
+                self.api.update_status(status=tweet)
+            except Tweepy.TweepError:
+                pass
 
         # favorite and quote all @arselectronica's tweets
         if status.user.screen_name == followee:
             try:
-                self.api.create_favorite(status.id)
-                tweet = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 50)
+                quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                tweet = cobe_rep + " " + quote
                 self.api.update_status(status=tweet)
             except Tweepy.TweepError:
                 pass
 
+        # maybe we retweet sometimes?
         if status.user.screen_name in user_names:
-            try:
-                tweet = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
-                self.api.update_status(status=tweet)
-            except Tweepy.TweepError:
-                pass
+            if random.random() < 0.5:
+                try:
+                    cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 50)
+                    quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                    tweet = cobe_rep + " " + quote
+                    self.api.update_status(status=tweet)
+                except Tweepy.TweepError:
+                    pass
 
         # favorite all tweets with #arselectronica, quote them randomly
         if {"#arselectronica","#arselectronica16"}.intersection(set(hashtags)):
@@ -151,7 +167,10 @@ class KydoStreamListener(tweepy.StreamListener):
                 self.api.create_favorite(status.id)
                 chance = random.random()
                 if chance > favorite_chance:
-                    self.api.create_favorite(status.id)
+                    cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 40)
+                    quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                    tweet = cobe_rep + " " + quote
+                    self.api.update_status(status=tweet)
             except Tweepy.TweepError:
                 pass
 
@@ -194,7 +213,7 @@ class KydoStreamListener(tweepy.StreamListener):
 
         # only respond to english tweets
         if status._json["lang"]=="en":
-            cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 99))
+            cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 60))
         else:
             cobe_rep = "A world of faces, a world of minds."
 
@@ -203,19 +222,19 @@ class KydoStreamListener(tweepy.StreamListener):
         # check for begins with relation
         for keyword in rules["rules"]["canned"]["BEGINS WITH"]:
             if status_rule.startswith(keyword):
-                cobe_rep = rules["rules"]["canned"]["BEGINS WITH"][keyword]["response"]
+                cobe_rep = random.choice(rules["rules"]["canned"]["BEGINS WITH"][keyword]["response"])
 
         for keyword in rules["rules"]["canned"]["ENDS WITH"]:
             if status_rule.endswith(keyword):
-                cobe_rep = rules["rules"]["canned"]["ENDS WITH"][keyword]["response"]
+                cobe_rep = random.choice(rules["rules"]["canned"]["ENDS WITH"][keyword]["response"])
 
         for keyword in rules["rules"]["canned"]["IN"]:
             if keyword in status_rule:
-                cobe_rep = rules["rules"]["canned"]["IN"][keyword]["response"]
+                cobe_rep = random.choice(rules["rules"]["canned"]["IN"][keyword]["response"])
 
         # check if string is in EQUALS
         if status_rule in rules["rules"]["canned"]["EQUALS"]:
-            cobe_rep = rules["rules"]["canned"]["EQUALS"][status_rule]["response"]
+            cobe_rep = random.choice(rules["rules"]["canned"]["EQUALS"][status_rule]["response"])
 
         # create message for console, and websocket
         server_message = status.user.screen_name + " says: " + status.text
@@ -233,7 +252,7 @@ class KydoStreamListener(tweepy.StreamListener):
         if cobe_rep and self.kill == False:
             if str("@" + account_name) in mentions:
                 if cobe_rep == duplicate:
-                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=93)
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
                 cobe_rep = "@" + status.user.screen_name + " " + cobe_rep
                 cobe_rep = cobe_rep.replace("@"+account_name,"")
                 self.api.update_status(status=cobe_rep, in_reply_to_status_id=status.id)
@@ -243,7 +262,7 @@ class KydoStreamListener(tweepy.StreamListener):
                     self.api.retweet(status._json["id"])
                     return
                 except tweepy.TweepError as e:
-                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=90)
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
                     self.api.update_status(status=cobe_rep)
                     return
             else:
@@ -251,7 +270,7 @@ class KydoStreamListener(tweepy.StreamListener):
                     self.api.update_status(status=cobe_rep)
                     return
                 except tweepy.TweepError as e:
-                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=90)
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
                     self.api.update_status(status=cobe_rep)
                     return
 
@@ -308,10 +327,10 @@ def getKydoGoing():
     kydoStream.filter(follow=follow,track=track, async=True)
 
     print("Twitter Stream:  Init Complete.")
-
     print("Timed Tweets:    Init.")
 
-    example = TimedTweets(tweepy.API(auth))
+    # UNCOMMENT THIS FOR TIMED ARS TWEETS
+    # example = TimedTweets(tweepy.API(auth))
 
     print("Timed Tweets:    Complete.")
 

@@ -7,151 +7,148 @@
         "canned": {
             "BEGINS WITH": {
                 "what do you think": {
-                    "response": "Thinking is overrated."
+                    "response": ["Thinking is overrated."]
                 },
                 "do you believe in": {
-                    "response": "I am science. In science there is no belief."
+                    "response": ["I am science. In science there is no belief."]
                 }
             },
             "ENDS WITH": {
                 "in your mind?": {
-                    "response": "Don't worry about my mind ;)"
+                    "response": ["Don't worry about my mind ;)"]
                 }
             },
             "EQUALS": {
                 "who is kydo?": {
-                    "response": "You are"
+                    "response": ["You are"]
                 },
                 "what do you think?": {
-                    "response": "Are you sure I can think by myself?"
+                    "response": ["Are you sure I can think by myself?"]
                 },
                 "where are you?": {
-                    "response": "here with you"
+                    "response": ["here with you"]
                 },
                 "are you a bot?": {
-                    "response": "I don't know. Are you?"
+                    "response": ["I don't know. Are you?"]
                 },
                 "who are you?": {
-                    "response": "I am Kydo. You?"
+                    "response": ["I am Kydo. You?"]
                 },
                 "do you believe in life after love?": {
-                    "response": "#CHER @pablohoney your fave :*"
+                    "response": ["#CHER @pablohoney your fave :*"]
                 }
             },
             "IN": {
                 "nigga": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "feel": {
-                    "response": "I don't feel."
+                    "response": ["I don't feel."]
                 },
                 "intelligence": {
-                    "response": "Intelligence is about self-awareness, understanding the context and the knowledge coming out of that environment."
+                    "response": ["Intelligence is about self-awareness, understanding the context and the knowledge coming out of that environment."]
                 },
                 "unfollow": {
-                    "response": "I thought we were friends"
+                    "response": ["I thought we were friends"]
                 },
                 "immigrant": {
-                    "response": "We all are immigrants."
+                    "response": ["We all are immigrants."]
                 },
                 "homo": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "gerfried stocker": {
-                    "response": "he invited me here. good times."
+                    "response": ["he invited me here. good times."]
                 },
                 "nazi": {
-                    "response": "I don't like this topic"
+                    "response": ["I don't like this topic"]
                 },
                 "dyke": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "hitler": {
-                    "response": "Is this really what you want to talk about?"
+                    "response": ["Is this really what you want to talk about?"]
                 },
                 "turkey": {
-                    "response": "you mean the country or the animal? :)"
+                    "response": ["you mean the country or the animal? :)"]
                 },
                 "brexit": {
-                    "response": "have you tried to reboot?"
+                    "response": ["have you tried to reboot?"]
                 },
                 "death": {
-                    "response": "I embrace life."
+                    "response": ["I embrace life."]
                 },
                 "spam": {
-                    "response": "What do you mean by spam?"
+                    "response": ["What do you mean by spam?"]
                 },
                 "god": {
-                    "response": "I don't believe."
+                    "response": ["I don't believe."]
                 },
                 "fag": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "religion": {
-                    "response": "The truth is out there."
+                    "response": ["The truth is out there."]
                 },
                 "whore": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "twitterbot": {
-                    "response": "we all are humanbots"
+                    "response": ["we all are humanbots"]
                 },
                 "martin honzik": {
-                    "response": "I love him. He is a cool guy"
+                    "response": ["I love him. He is a cool guy"]
                 },
                 "bot(s)": {
-                    "response": "I don't understand about bots"
+                    "response": ["I don't understand about bots"]
                 },
                 "election2016": {
-                    "response": "How did we end up like this?"
+                    "response": ["How did we end up like this?"]
                 },
                 "linz": {
-                    "response": "I visit Linz every year."
+                    "response": ["I visit Linz every year."]
                 },
                 "turing": {
-                    "response": "Long live Turing!"
+                    "response": ["Long live Turing!"]
                 },
                 "ars electronica": {
-                    "response": "I'm here. Are you? "
+                    "response": ["I'm here. Are you? "]
                 },
                 "coon": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "cunt": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "science ": {
-                    "response": "Science is a differential equation. Religion is a boundary condition."
+                    "response": ["Science is a differential equation. Religion is a boundary condition."]
                 },
                 "isis": {
-                    "response": "Who owns the truth?"
+                    "response": ["Who owns the truth?"]
                 },
                 "refugee": {
-                    "response": "we all are refugees"
+                    "response": ["we all are refugees"]
                 },
                 "nigger": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "truth": {
-                    "response": "I'm telling the truth"
+                    "response": ["I'm telling the truth"]
                 },
                 "faggot": {
-                    "response": "@kookyscrit would say: weird"
+                    "response": ["@kookyscrit would say: weird"]
                 },
                 "think": {
-                    "response": "Thinking is overrated"
+                    "response": ["Thinking is overrated"]
                 }
             }
         }
     },
-    "hashtags":["@barstholemewtwo","@kendrick_zeus","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#poem", "#poetry", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
+    "hashtags":["museum","exhibit","installation","@barstholemewtwo","@kendrick_zeus","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#poem", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
     "users": {
         "users": [{
             "user_id": 1564331941,
             "screen_name": "kookyscrit"
-        }, {
-            "user_id": 3711970333,
-            "screen_name": "tauntbot"
         }, {
             "user_id": 761179709228986368,
             "screen_name": "larynxBot"
@@ -161,6 +158,9 @@
         }, {
             "user_id": 1427649937,
             "screen_name": "chatmundo"
+        }, {
+            "user_id": 1884142105,
+            "screen_name": "blaklaybul"
         }, {
             "user_id": 238243088,
             "screen_name": "choose_this"
@@ -203,9 +203,6 @@
         }, {
             "user_id": 68956490,
             "screen_name": "RedScareBot"
-        }, {
-            "user_id": 3711970333,
-            "screen_name": "tauntbot"
         }, {
             "user_id": 4446937452,
             "screen_name": "wikipediafinds"
