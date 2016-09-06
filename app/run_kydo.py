@@ -126,11 +126,17 @@ class KydoStreamListener(tweepy.StreamListener):
         if status.user.screen_name == account_name:
             return
 
-        # we don't want to learn mentions.
+        # status rule will be checked against the rules.
         status_rule = status.text
+
+        # we don't want to learn mentions.
         for mention in mentions:
             status_rule = status.text.replace(mention, "")
+
+        # strip out whitespace
         status_rule = " ".join(status_rule.split())
+        # duplicate the status rule before we augment it further.
+        # we want to make sure that we dont respond with the same text.
         duplicate = status_rule
 
         # learn the new tweet, if it's english
@@ -141,8 +147,11 @@ class KydoStreamListener(tweepy.StreamListener):
         # if self.total_mes < 500:
         #         return
 
+        # now don't respond to anything that doesn't mention us
         if not(str("@" + account_name) in mentions):
             return
+
+        self.api.create_favorite(status.id)
 
         # now, strip out other shit to check against the rules.
         for hashtag in hashtags:
@@ -153,16 +162,13 @@ class KydoStreamListener(tweepy.StreamListener):
             status_rule = status_rule.replace(mention, "")
         status_rule = " ".join(status_rule.split()).lower()
 
-        # only create english tweets
+        # only respond to english tweets
         if status._json["lang"]=="en":
             cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 99))
         else:
-            cobe_rep = "Sorry, I only speak english."
+            cobe_rep = "A world of faces, a world of minds."
 
         # now, check the status for rule conditions
-        # check if string is in EQUALS
-        if status_rule in rules["rules"]["canned"]["EQUALS"]:
-            cobe_rep = rules["rules"]["canned"]["EQUALS"][status_rule]["response"]
 
         # check for begins with relation
         for keyword in rules["rules"]["canned"]["BEGINS WITH"]:
@@ -176,6 +182,10 @@ class KydoStreamListener(tweepy.StreamListener):
         for keyword in rules["rules"]["canned"]["IN"]:
             if keyword in status_rule:
                 cobe_rep = rules["rules"]["canned"]["IN"][keyword]["response"]
+
+        # check if string is in EQUALS
+        if status_rule in rules["rules"]["canned"]["EQUALS"]:
+            cobe_rep = rules["rules"]["canned"]["EQUALS"][status_rule]["response"]
 
         # create message for console, and websocket
         server_message = status.user.screen_name + " says: " + status.text
@@ -252,7 +262,7 @@ def getKydoGoing():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
 
-    print "IM HERE."
+    print("Twitter Stream:  Init.")
 
     global kydoStreamListener
     kydoStreamListener = KydoStreamListener(api = tweepy.API(auth))
@@ -260,11 +270,13 @@ def getKydoGoing():
     kydoStream = tweepy.Stream(auth = auth, listener = kydoStreamListener)
     kydoStream.filter(follow=follow,track=track, async=True)
 
+    print("Twitter Stream:  Init Complete.")
+
+    print("Timed Tweets:    Init.")
+
     example = TimedTweets(tweepy.API(auth))
-    time.sleep(3)
-    print('Checkpoint')
-    time.sleep(2)
-    print('Bye')
+
+    print("Timed Tweets:    Complete.")
 
     listeners.append(kydoStreamListener)
     streams.append(kydoStream)

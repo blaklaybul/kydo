@@ -5,6 +5,7 @@
     <link href="static/css/bootstrap.css" rel="stylesheet">
 
     <style>
+
     </style>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
@@ -13,11 +14,14 @@
         $(document).ready(function() {
             killStatus = '{{ killStatus }}';
             kill_test = ""
-            // kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
+                // kill_test = killStatus === true ? "KYDO IS SILENT" : "KYDO SPEAKS";
             console.log(killStatus)
 
-            if (killStatus) { kill_test = "KYDO IS SILENT"}
-            else {kill_test = "KYDO SPEAKS"}
+            if (killStatus) {
+                kill_test = "KYDO IS SILENT"
+            } else {
+                kill_test = "KYDO SPEAKS"
+            }
 
             console.log(killStatus, kill_test);
 
