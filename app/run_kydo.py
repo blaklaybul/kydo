@@ -133,7 +133,7 @@ class KydoStreamListener(tweepy.StreamListener):
         # first, lets do proactivity
         if FOR_TESTING < 0.05:
             try:
-                cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 50)
+                cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                 tweet = cobe_rep + " " + quote
                 self.api.update_status(status=tweet)
@@ -143,7 +143,7 @@ class KydoStreamListener(tweepy.StreamListener):
         # favorite and quote all @arselectronica's tweets
         if status.user.screen_name == followee:
             try:
-                cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 50)
+                cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                 tweet = cobe_rep + " " + quote
                 self.api.update_status(status=tweet)
@@ -154,7 +154,7 @@ class KydoStreamListener(tweepy.StreamListener):
         if status.user.screen_name in user_names:
             if random.random() < 0.5:
                 try:
-                    cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 50)
+                    cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                     quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                     tweet = cobe_rep + " " + quote
                     self.api.update_status(status=tweet)
@@ -167,7 +167,7 @@ class KydoStreamListener(tweepy.StreamListener):
                 self.api.create_favorite(status.id)
                 chance = random.random()
                 if chance > favorite_chance:
-                    cobe_rep = self.brain.reply(status.text.encode("utf-8"), max_len = 40)
+                    cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                     quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                     tweet = cobe_rep + " " + quote
                     self.api.update_status(status=tweet)
