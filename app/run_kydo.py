@@ -320,4 +320,4 @@ def getKydoGoing():
 
 if __name__ == '__main__':
     getKydoGoing()
-    socketio.run(application, port=3000)
+    socketio.run(application, port=3000, host="0.0.0.0")
