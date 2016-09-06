@@ -130,8 +130,8 @@ class KydoStreamListener(tweepy.StreamListener):
         if status.user.screen_name == account_name:
             return
 
-        # first, lets do proactivity
-        if FOR_TESTING < 0.05:
+        # first, lets do proactivity, one every 5 min or so
+        if FOR_TESTING < 0.005:
             try:
                 cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
