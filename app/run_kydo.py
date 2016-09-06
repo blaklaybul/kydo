@@ -22,6 +22,10 @@ consumer_secret = 'KZuBQAzZzr2mLohkT22i8WuUmcrtsFTwcrA2GwnVYrlIk1xGuN'
 access_token = '772181462066012160-tLNrMb10touyHITYRWNHcVKqrbgIGv5'
 access_token_secret = 'LyFkCjNN8rNLQKB6yBnwkfHVwQhZxVA5cemPfUVmWFtoX'
 account_name = "kendrick_zeus"
+followee = "barstholemewtwo"
+
+# probability that kydo will like a tweet
+favorite_chance = 0.5
 
 kydoStreamListener=None
 kydoStream=None
@@ -32,15 +36,12 @@ streams = []
 with open("rules.json") as g:
     rules = json.load(g)
 
-# track information about the twitter account
+# track information about the twitter
 # follow=[]
 follow = [str(user["user_id"]) for user in rules["users"]["users"]]
+user_names = [user["screen_name"] for user in rules["users"]["users"]]
 # track = ["@kendrick_zeus"]
 track = rules["hashtags"]
-
-# track media so we don't post duplicates?
-media_tweeted = []
-
 
 class TimedTweets(object):
     """
@@ -126,6 +127,37 @@ class KydoStreamListener(tweepy.StreamListener):
         if status.user.screen_name == account_name:
             return
 
+        # first, lets do proactivity
+
+        # favorite and quote all @arselectronica's tweets
+        if status.user.screen_name == followee:
+            try:
+                self.api.create_favorite(status.id)
+                tweet = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                self.api.update_status(status=tweet)
+            except Tweepy.TweepError:
+                pass
+
+        if status.user.screen_name in user_names:
+            try:
+                tweet = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                self.api.update_status(status=tweet)
+            except Tweepy.TweepError:
+                pass
+
+        # favorite all tweets with #arselectronica, quote them randomly
+        if {"#arselectronica","#arselectronica16"}.intersection(set(hashtags)):
+            try:
+                self.api.create_favorite(status.id)
+                chance = random.random()
+                if chance > favorite_chance:
+                    self.api.create_favorite(status.id)
+            except Tweepy.TweepError:
+                pass
+
+
+
+
         # status rule will be checked against the rules.
         status_rule = status.text
 
@@ -150,8 +182,6 @@ class KydoStreamListener(tweepy.StreamListener):
         # now don't respond to anything that doesn't mention us
         if not(str("@" + account_name) in mentions):
             return
-
-        self.api.create_favorite(status.id)
 
         # now, strip out other shit to check against the rules.
         for hashtag in hashtags:
