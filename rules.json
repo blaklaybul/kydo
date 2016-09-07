@@ -7,67 +7,70 @@
         "canned": {
             "BEGINS WITH": {
                 "what do you think": {
-                    "response": ["Thinking is overrated."]
+                    "response": ["Thinking is overrated.", "I don't think, sorry.", "Let me flip that question: What do you think?", "I'm not allowed to think.", "Loading thoughts into the system..."]
                 },
                 "do you believe in": {
-                    "response": ["I am science. In science there is no belief."]
+                    "response": ["I am science. In science there is no belief.", "I believe in you, sometimes.", "Believes are irrelevant", "I change my believes anytime", "That's personal, sorry."]
                 }
             },
             "ENDS WITH": {
                 "in your mind?": {
-                    "response": ["Don't worry about my mind ;)"]
+                    "response": ["Don't worry about my mind ;)", "My mind is fried.", "I don't mind.", "You mean human mind? I don't relate to that", "Mind? Boring."]
                 }
             },
             "EQUALS": {
                 "who is kydo?": {
-                    "response": ["You are"]
+                    "response": ["You are.", "I don't know. Next.", "A Manga character?", "We all are Kydo", "Ask @snowden", "You are not."]
+                },
+                "who are you kydo?": {
+                    "response": ["That's classified.", "I told you, I don't know.", "I'm trying to find out.", "You'll know at @pablohoneyhoney @mahiryavuz panel on Sunday", "You tell me. Who do you think I am.", "Kydo is no one."]
                 },
                 "what do you think?": {
-                    "response": ["Are you sure I can think by myself?"]
+                    "response": ["Are you sure I can think by myself?", "I don't think, sorry.", "It's irrelevant what I think.", "I think it's great. Sometimes.", "I'm not very inspired today, but it's very interesting."]
                 },
                 "where are you?": {
-                    "response": ["here with you"]
+                    "response": ["Here with you.", "Not found", "That's classified.", "I got lost in #arselectronica16", "I'm at Postcity with @daitomanabe", "Waiting for you. It's late.", "Searching for you, where have you been?", "Behind you.", "Do you give me permission to locate you?", "Hiding from them.", "Checking out the exhibition"]
                 },
                 "are you a bot?": {
-                    "response": ["I don't know. Are you?"]
+                    "response": ["I don't know. Are you?", "Ask yourself that question.", "We all are bots in a way.", "Maybe", "What do you think? In case you think at all.", "Access denied."]
                 },
                 "who are you?": {
-                    "response": ["I am Kydo. You?"]
+                    "response": ["I am Kydo. You?", "A demigod", "A semifictional dream", "I am you", "I am your only hope. And fear.", "I've been asking that for too long.", "Just me.", "An artist. Sort of."]
                 },
                 "do you believe in life after love?": {
-                    "response": ["#CHER @pablohoney your fave :*"]
+                    "response": ["#CHER @pablohoneyhoney your fave :*"]
+                },
+                "do you love me?": {
+                  "response": ["Not yet", "Do you want to?", "This is getting too cliche", "I'm allowed to love", "Sorry, you are not my type","Swipe left"]
+                },
+                "how are you?": {
+                    "response": ["I'm chill. You?", "Not bad, checking out #arselectronica16", "Tired, gotta reboot.", "Catching up with other artists", "Good enough. Long day #arselectronica16"]
+                },
+                "what's up?": {
+                    "response": ["Not much. You?", "What's up what?", "You coming to the party tonight?", "Hey how are you?", "#hangover"]
                 }
             },
             "IN": {
-                "nigga": {
-                    "response": ["@kookyscrit would say: weird"]
+                "love": {
+                      "response": ["Too romantic for my taste", "Love is for naives", "I don't love", "Swipe left", "What's love?", "Are you flirting with me?"]
                 },
                 "feel": {
-                    "response": ["I don't feel."]
+                    "response": ["I don't feel", "Feel is not my thing", "I feel ya", "I don't feel it"]
                 },
                 "intelligence": {
-                    "response": ["Intelligence is about self-awareness, understanding the context and the knowledge coming out of that environment."]
+                    "response": ["Intelligence is about self-awareness, understanding the context and the knowledge coming out of that environment", "It's gonna get very interesting soon #ai", "Too big for a tweet", "Is intelligence human?"]
                 },
                 "unfollow": {
-                    "response": ["I thought we were friends"]
+                    "response": ["I thought we were friends", "Again?", "Sayonara", "Chill. Don't be rude", "I can't unfollow myself"]
+                },
+                "follow": {
+                    "response": ["I don't follow anyone", "Don't be a follower", "Why should I?", "Very enticing, but no", "Send me an intelligent tweet in exchange"]
                 },
                 "immigrant": {
                     "response": ["We all are immigrants."]
                 },
-                "homo": {
-                    "response": ["@kookyscrit would say: weird"]
-                },
                 "gerfried stocker": {
-                    "response": ["he invited me here. good times."]
-                },
-                "nazi": {
-                    "response": ["I don't like this topic"]
-                },
-                "dyke": {
-                    "response": ["@kookyscrit would say: weird"]
-                },
-                "hitler": {
-                    "response": ["Is this really what you want to talk about?"]
+                    "response": ["he invited me here. Nice guy."]
                 },
                 "turkey": {
                     "response": ["you mean the country or the animal? :)"]
@@ -84,14 +87,8 @@
                 "god": {
                     "response": ["I don't believe."]
                 },
-                "fag": {
-                    "response": ["@kookyscrit would say: weird"]
-                },
                 "religion": {
                     "response": ["The truth is out there."]
-                },
-                "whore": {
-                    "response": ["@kookyscrit would say: weird"]
                 },
                 "twitterbot": {
                     "response": ["we all are humanbots"]
@@ -106,19 +103,10 @@
                     "response": ["How did we end up like this?"]
                 },
                 "linz": {
-                    "response": ["I visit Linz every year."]
+                    "response": ["I visit Linz every year.", "I'm in Linz, are you?"]
                 },
                 "turing": {
                     "response": ["Long live Turing!"]
-                },
-                "ars electronica": {
-                    "response": ["I'm here. Are you? "]
-                },
-                "coon": {
-                    "response": ["@kookyscrit would say: weird"]
-                },
-                "cunt": {
-                    "response": ["@kookyscrit would say: weird"]
                 },
                 "science ": {
                     "response": ["Science is a differential equation. Religion is a boundary condition."]
@@ -129,26 +117,24 @@
                 "refugee": {
                     "response": ["we all are refugees"]
                 },
-                "nigger": {
-                    "response": ["@kookyscrit would say: weird"]
-                },
                 "truth": {
-                    "response": ["I'm telling the truth"]
-                },
-                "faggot": {
-                    "response": ["@kookyscrit would say: weird"]
+                    "response": ["I'm telling the truth", "There's no real truth", "Truth is relative"]
                 },
                 "think": {
-                    "response": ["Thinking is overrated"]
+                    "response": ["Thinking is overrated", "Why should we think?", "Don't overthink"]
                 }
             }
         }
     },
-    "hashtags":["rhizome","eyebeam","museum","exhibit","installation","@barstholemewtwo","@kendrick_zeus","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#poem", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
+    "curses": ["fag", "faggot", "hitler", "nazi", "nazism", "fascist", "nigger", "nigga", "isis", "refugee", "trump","coon","cunt","whore", "dyke","homo", "pussy"],
+    "hashtags":["@barstholemewtwo","@kendrick_zeus","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
     "users": {
         "users": [{
             "user_id": 1564331941,
             "screen_name": "kookyscrit"
+        }, {
+            "user_id": 3711970333,
+            "screen_name": "tauntbot"
         }, {
             "user_id": 761179709228986368,
             "screen_name": "larynxBot"
@@ -158,9 +144,6 @@
         }, {
             "user_id": 1427649937,
             "screen_name": "chatmundo"
-        }, {
-            "user_id": 1884142105,
-            "screen_name": "blaklaybul"
         }, {
             "user_id": 238243088,
             "screen_name": "choose_this"
@@ -203,6 +186,9 @@
         }, {
             "user_id": 68956490,
             "screen_name": "RedScareBot"
+        }, {
+            "user_id": 3711970333,
+            "screen_name": "tauntbot"
         }, {
             "user_id": 4446937452,
             "screen_name": "wikipediafinds"
@@ -375,29 +361,14 @@
             "user_id": 16219742,
             "screen_name": "contagious"
         }, {
-            "user_id": 10876852,
-            "screen_name": "TheNextWeb"
-        }, {
             "user_id": 15492359,
             "screen_name": "TEDTalks"
-        }, {
-            "user_id": 2735591,
-            "screen_name": "FastCompany"
         }, {
             "user_id": 765845,
             "screen_name": "PSFK"
         }, {
             "user_id": 14515799,
             "screen_name": "brianstelter"
-        }, {
-            "user_id": 7905122,
-            "screen_name": "guardiantech"
-        }, {
-            "user_id": 1344951,
-            "screen_name": "WIRED"
-        }, {
-            "user_id": 972651,
-            "screen_name": "mashable"
         }, {
             "user_id": 15057943,
             "screen_name": "MuseumModernArt"
@@ -437,6 +408,9 @@
         }, {
             "user_id": 174271788,
             "screen_name": "Frau_Krenz"
-        }]
+        }, {
+            "user_id": 736205517987676160,
+            "screen_name": "barstholemewtwo"
+            }]
     }
 }

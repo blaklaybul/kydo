@@ -25,7 +25,7 @@ account_name = "kendrick_zeus"
 followee = "barstholemewtwo"
 
 # probability that kydo will like a tweet, 1-this is prob he will quote it
-favorite_chance = 0.9
+favorite_chance = 0.35
 
 kydoStreamListener=None
 kydoStream=None
@@ -40,7 +40,6 @@ with open("rules.json") as g:
 # follow=[]
 follow = [str(user["user_id"]) for user in rules["users"]["users"]]
 user_names = [user["screen_name"] for user in rules["users"]["users"]]
-# track = ["@kendrick_zeus"]
 track = rules["hashtags"]
 
 class TimedTweets(object):
@@ -111,44 +110,75 @@ class KydoStreamListener(tweepy.StreamListener):
     # here are the two brains, choose one
     Tweeter = markovify.combine([dfw_model, hesse_model, mcl_model], [1,1,1])
 
+    def formatTweet(self, tweet):
+
+        if tweet.split()[-1].endswith((u'\u2026',"...")):
+            remove_last = tweet.split()
+            del remove_last[-1]
+            tweet = " ".join(remove_last)
+
+        return tweet
+
+    def sendTweet(self, tweet, replyID=None):
+        if "RT: " in tweet:
+            tweet = tweet.replace("RT: ", "", 1)
+        elif "RT : " in tweet:
+            tweet = tweet.replace("RT : ", "", 1)
+        elif "RT " in tweet:
+            tweet = tweet.replace("RT ", "", 1)
+        tweet = self.formatTweet(tweet)
+        self.api.update_status(status=tweet, in_reply_to_status_id=replyID)
+
     def killSwitch(self):
         self.kill = not self.kill
 
     def on_status(self, status):
 
-        self.total_mes+=1
-        FOR_TESTING = random.random()
+        # jump out of status if the following conditions are met
+        # ##########################
+        if self.kill:
+            return
 
+        # return if it's kydo's tweet
+        if status.user.screen_name == account_name:
+            return
+        ##########################
+
+        # increment the counter. This is used for learning on a fresh brain.
+        self.total_mes+=1
+
+        # this will be a condition for randomly responding to tracked tweets.
+        FOR_TESTING = random.random()
         print "message:", str(self.total_mes), "    chance: ", str(FOR_TESTING)
+
 
         # get status metadata
         mentions = ["@"+user["screen_name"] for user in status.entities["user_mentions"] if status.entities["user_mentions"]]
         hashtags = ["#"+hashtag["text"] for hashtag in status.entities["hashtags"] if status.entities["hashtags"] ]
         urls = [url["url"] for url in status.entities["urls"] if status.entities["urls"]]
 
-        # return if it's kydo's tweet
-        if status.user.screen_name == account_name:
-            return
+        ### START   PROACTIVITY ###
 
-        # first, lets do proactivity, one every 5 min or so
-        if FOR_TESTING < 0.005:
+        # change value to determine frequency of tweets. This will respond to ~0.5% of incoming tweets.
+        if FOR_TESTING < 0.003:
             try:
                 cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                 tweet = cobe_rep + " " + quote
-                self.api.update_status(status=tweet)
-            except Tweepy.TweepError:
-                pass
+                self.sendTweet(tweet)
+            except tweepy.TweepError:
+                print "FAILED ON MESSAGE: ", str(self.total_mes)
 
         # favorite and quote all @arselectronica's tweets
         if status.user.screen_name == followee:
             try:
+                self.api.create_favorite(status.id)
                 cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                 tweet = cobe_rep + " " + quote
-                self.api.update_status(status=tweet)
-            except Tweepy.TweepError:
-                pass
+                self.sendTweet(tweet)
+            except tweepy.TweepError:
+                print "FAILED ON MESSAGE: ", str(self.total_mes)
 
         # maybe we retweet sometimes?
         if status.user.screen_name in user_names:
@@ -157,9 +187,9 @@ class KydoStreamListener(tweepy.StreamListener):
                     cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                     quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                     tweet = cobe_rep + " " + quote
-                    self.api.update_status(status=tweet)
-                except Tweepy.TweepError:
-                    pass
+                    self.sendTweet(tweet)
+                except tweepy.TweepError:
+                    print "FAILED ON MESSAGE: ", str(self.total_mes)
 
         # favorite all tweets with #arselectronica, quote them randomly
         if {"#arselectronica","#arselectronica16"}.intersection(set(hashtags)):
@@ -170,12 +200,13 @@ class KydoStreamListener(tweepy.StreamListener):
                     cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                     quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                     tweet = cobe_rep + " " + quote
-                    self.api.update_status(status=tweet)
-            except Tweepy.TweepError:
-                pass
+                    self.sendTweet(tweet)
+            except tweepy.TweepError:
+                print "FAILED ON MESSAGE: ", str(self.total_mes)
 
+        ### END     PROACTIVITY ###
 
-
+        ### START     LEARNING ###
 
         # status rule will be checked against the rules.
         status_rule = status.text
@@ -192,7 +223,12 @@ class KydoStreamListener(tweepy.StreamListener):
 
         # learn the new tweet, if it's english
         if status._json["lang"]=="en":
-            self.brain.learn(status_rule)
+            has_curses = set(status.text.split()).intersection(rules["curses"])
+            if not has_curses:
+                self.brain.learn(status_rule)
+            else:
+                print "CURSE IN: ", status.text, " not learning, not replying."
+                return
 
         # print self.total_mes
         # if self.total_mes < 500:
@@ -201,6 +237,8 @@ class KydoStreamListener(tweepy.StreamListener):
         # now don't respond to anything that doesn't mention us
         if not(str("@" + account_name) in mentions):
             return
+
+        ### START   RULE CHECKS ###
 
         # now, strip out other shit to check against the rules.
         for hashtag in hashtags:
@@ -211,30 +249,7 @@ class KydoStreamListener(tweepy.StreamListener):
             status_rule = status_rule.replace(mention, "")
         status_rule = " ".join(status_rule.split()).lower()
 
-        # only respond to english tweets
-        if status._json["lang"]=="en":
-            cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 60))
-        else:
-            cobe_rep = "A world of faces, a world of minds."
-
-        # now, check the status for rule conditions
-
-        # check for begins with relation
-        for keyword in rules["rules"]["canned"]["BEGINS WITH"]:
-            if status_rule.startswith(keyword):
-                cobe_rep = random.choice(rules["rules"]["canned"]["BEGINS WITH"][keyword]["response"])
-
-        for keyword in rules["rules"]["canned"]["ENDS WITH"]:
-            if status_rule.endswith(keyword):
-                cobe_rep = random.choice(rules["rules"]["canned"]["ENDS WITH"][keyword]["response"])
-
-        for keyword in rules["rules"]["canned"]["IN"]:
-            if keyword in status_rule:
-                cobe_rep = random.choice(rules["rules"]["canned"]["IN"][keyword]["response"])
-
-        # check if string is in EQUALS
-        if status_rule in rules["rules"]["canned"]["EQUALS"]:
-            cobe_rep = random.choice(rules["rules"]["canned"]["EQUALS"][status_rule]["response"])
+        ### ENDS    RULE CHECKS ###
 
         # create message for console, and websocket
         server_message = status.user.screen_name + " says: " + status.text
@@ -242,21 +257,47 @@ class KydoStreamListener(tweepy.StreamListener):
         # print "# ", server_message
 
         # prevent tweets from ending with "..."
-        if cobe_rep.split()[-1].endswith((u'\u2026',"...")):
-            remove_last = cobe_rep.split()
-            del remove_last[-1]
-            cobe_rep= " ".join(remove_last)
 
-        print cobe_rep
-
-        if cobe_rep and self.kill == False:
+        if self.kill == False:
             if str("@" + account_name) in mentions:
-                if cobe_rep == duplicate:
-                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
+                # only respond to english tweets
+                if status._json["lang"]=="en":
+                    strip_mention = status.text.split()[1:]
+                    strip_mention = " ".join(strip_mention)
+                    print strip_mention
+                    cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(strip_mention.encode("utf-8"), max_len = 60))
+                    while cobe_rep.lower()=='do you know?':
+                        rand_len = random.randint(40,90)
+                        print "message: ", str(self.total_mes), " GENERATING RESPONSE"
+                        cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = rand_len))
+                else:
+                    cobe_rep = "English is my only language."
+
+                # check for begins with relation
+                if status_rule in rules["rules"]["canned"]["EQUALS"]:
+                    cobe_rep = random.choice(rules["rules"]["canned"]["EQUALS"][status_rule]["response"])
+
+                for keyword in rules["rules"]["canned"]["BEGINS WITH"]:
+                    if status_rule.startswith(keyword):
+                        cobe_rep = random.choice(rules["rules"]["canned"]["BEGINS WITH"][keyword]["response"])
+
+                for keyword in rules["rules"]["canned"]["ENDS WITH"]:
+                    if status_rule.endswith(keyword):
+                        cobe_rep = random.choice(rules["rules"]["canned"]["ENDS WITH"][keyword]["response"])
+
+                for keyword in rules["rules"]["canned"]["IN"]:
+                    if keyword in status_rule:
+                        cobe_rep = random.choice(rules["rules"]["canned"]["IN"][keyword]["response"])
+
                 cobe_rep = "@" + status.user.screen_name + " " + cobe_rep
                 cobe_rep = cobe_rep.replace("@"+account_name,"")
-                self.api.update_status(status=cobe_rep, in_reply_to_status_id=status.id)
+
+                if cobe_rep == duplicate:
+                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
+
+                self.sendTweet(tweet=cobe_rep, replyID=status.id)
                 return
+
             elif status._json.get("retweeted_status"):
                 try:
                     self.api.retweet(status._json["id"])
@@ -330,7 +371,7 @@ def getKydoGoing():
     print("Timed Tweets:    Init.")
 
     # UNCOMMENT THIS FOR TIMED ARS TWEETS
-    # example = TimedTweets(tweepy.API(auth))
+    example = TimedTweets(tweepy.API(auth))
 
     print("Timed Tweets:    Complete.")
 
