@@ -167,25 +167,22 @@ class KydoStreamListener(tweepy.StreamListener):
                 # quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                 # tweet = cobe_rep + " " + quote
                 # self.sendTweet(tweet)
-            except tweepy.TweepError:
-                print "FAILED ON MESSAGE: ", str(self.total_mes)
+            except tweepy.TweepError as e:
+                print "FAILED ON MESSAGE: ", str(self.total_mes), " because: ", e
 
         # favorite and quote all @arselectronica's tweets
         if status.user.screen_name == followee:
             try:
-                self.api.create_favorite(status.id)
                 self.api.retweet(status.id)
                 # cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 # quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                 # tweet = cobe_rep + " " + quote
                 # self.sendTweet(tweet)
-            except tweepy.TweepError:
-                print "FAILED ON MESSAGE: ", str(self.total_mes)
+            except tweepy.TweepError as e:
+                print "FAILED ON MESSAGE: ", str(self.total_mes), " because: ", e
 
         # favorite all tweets with #arselectronica, quote them randomly
-        if {"#arselectronica","#arselectronica16"}.intersection(set(hashtags)):
-            print status.id
-            print status.text
+        elif {"#arselectronica","#arselectronica16"}.intersection(set(hashtags)):
             try:
                 self.api.create_favorite(status.id)
                 chance = random.random()
@@ -195,8 +192,8 @@ class KydoStreamListener(tweepy.StreamListener):
                     # quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
                     # tweet = cobe_rep + " " + quote
                     # self.sendTweet(tweet)
-            except tweepy.TweepError:
-                print "FAILED ON MESSAGE: ", str(self.total_mes)
+            except tweepy.TweepError as e:
+                print "FAILED ON MESSAGE: ", str(self.total_mes), " because: ", e
 
         ### END     PROACTIVITY ###
 

@@ -127,15 +127,9 @@
         }
     },
     "curses": ["fag", "faggot", "hitler", "nazi", "nazism", "fascist", "nigger", "nigga", "isis", "refugee", "trump", "coon", "cunt", "whore", "dyke","homo", "pussy"],
-    "hashtags":["#MHMH919","@hellokydo","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
+    "hashtags":["@hellokydo","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
     "users": {
         "users": [{
-            "user_id": 1564331941,
-            "screen_name": "kookyscrit"
-        }, {
-            "user_id": 3711970333,
-            "screen_name": "tauntbot"
-        }, {
             "user_id": 761179709228986368,
             "screen_name": "larynxBot"
         }, {
@@ -156,9 +150,6 @@
         }, {
             "user_id": 1249693405,
             "screen_name": "DearAssistant"
-        }, {
-            "user_id": 705113652471439361,
-            "screen_name": "DeepDrumpf"
         }, {
             "user_id": 37861434,
             "screen_name": "earthquakesSF"
