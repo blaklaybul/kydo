@@ -37,8 +37,8 @@ with open("rules.json") as g:
     rules = json.load(g)
 
 # track information about the twitter
-# follow=[]
-follow = [str(user["user_id"]) for user in rules["users"]["users"]]
+follow=[]
+# follow = [str(user["user_id"]) for user in rules["users"]["users"]]
 user_names = [user["screen_name"] for user in rules["users"]["users"]]
 track = rules["hashtags"]
 
@@ -134,10 +134,6 @@ class KydoStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
 
-        # jump out of status if the following conditions are met
-        # ##########################
-        if self.kill:
-            return
 
         # return if it's kydo's tweet
         if status.user.screen_name == account_name:
@@ -160,7 +156,7 @@ class KydoStreamListener(tweepy.StreamListener):
         ### START   PROACTIVITY ###
 
         # change value to determine frequency of tweets. This will respond to ~0.5% of incoming tweets.
-        if FOR_TESTING < 0.004:
+        if FOR_TESTING < 0.01:
             try:
                 self.api.retweet(status.id)
                 # cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
@@ -257,8 +253,8 @@ class KydoStreamListener(tweepy.StreamListener):
                     strip_mention = " ".join(strip_mention)
                     print strip_mention
                     cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(strip_mention.encode("utf-8"), max_len = 60))
-                    while cobe_rep.lower()=='do you know?':
-                        rand_len = random.randint(40,90)
+                    while cobe_rep.lower()==duplicate:
+                        rand_len = random.randint(30,90)
                         print "message: ", str(self.total_mes), " GENERATING RESPONSE"
                         cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = rand_len))
                 else:
@@ -282,6 +278,10 @@ class KydoStreamListener(tweepy.StreamListener):
 
                 cobe_rep = "@" + status.user.screen_name + " " + cobe_rep
                 cobe_rep = cobe_rep.replace("@"+account_name,"")
+
+                cobe_rep = cobe_rep.replace("@kendrick_zeus", "")
+                cobe_rep = cobe_rep.replace("@barstholemewtwo", "")
+                cobe_rep = " ".join(cobe_rep.split())
 
                 if cobe_rep == duplicate:
                     cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
