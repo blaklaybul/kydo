@@ -25,7 +25,7 @@ account_name = "hellokydo"
 followee = "arselectronica"
 
 # probability that kydo will like a tweet, 1-this is prob he will quote it
-favorite_chance = 0.35
+favorite_chance = 0.75
 
 kydoStreamListener=None
 kydoStream=None
