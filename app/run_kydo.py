@@ -162,10 +162,11 @@ class KydoStreamListener(tweepy.StreamListener):
         # change value to determine frequency of tweets. This will respond to ~0.5% of incoming tweets.
         if FOR_TESTING < 0.004:
             try:
-                cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
-                quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
-                tweet = cobe_rep + " " + quote
-                self.sendTweet(tweet)
+                self.api.retweet(status.id)
+                # cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
+                # quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                # tweet = cobe_rep + " " + quote
+                # self.sendTweet(tweet)
             except tweepy.TweepError:
                 print "FAILED ON MESSAGE: ", str(self.total_mes)
 
@@ -173,10 +174,11 @@ class KydoStreamListener(tweepy.StreamListener):
         if status.user.screen_name == followee:
             try:
                 self.api.create_favorite(status.id)
-                cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
-                quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
-                tweet = cobe_rep + " " + quote
-                self.sendTweet(tweet)
+                self.api.retweet(status.id)
+                # cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
+                # quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                # tweet = cobe_rep + " " + quote
+                # self.sendTweet(tweet)
             except tweepy.TweepError:
                 print "FAILED ON MESSAGE: ", str(self.total_mes)
 
@@ -197,10 +199,11 @@ class KydoStreamListener(tweepy.StreamListener):
                 self.api.create_favorite(status.id)
                 chance = random.random()
                 if chance > favorite_chance:
-                    cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
-                    quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
-                    tweet = cobe_rep + " " + quote
-                    self.sendTweet(tweet)
+                    self.api.retweet(status.id)
+                    # cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
+                    # quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
+                    # tweet = cobe_rep + " " + quote
+                    # self.sendTweet(tweet)
             except tweepy.TweepError:
                 print "FAILED ON MESSAGE: ", str(self.total_mes)
 
