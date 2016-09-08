@@ -25,7 +25,7 @@ account_name = "hellokydo"
 followee = "arselectronica"
 
 # probability that kydo will like a tweet, 1-this is prob he will quote it
-favorite_chance = 0.75
+favorite_chance = 0.5
 
 kydoStreamListener=None
 kydoStream=None
@@ -182,19 +182,10 @@ class KydoStreamListener(tweepy.StreamListener):
             except tweepy.TweepError:
                 print "FAILED ON MESSAGE: ", str(self.total_mes)
 
-        # maybe we retweet sometimes?
-        if status.user.screen_name in user_names:
-            if random.random() < 0.5:
-                try:
-                    cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
-                    quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
-                    tweet = cobe_rep + " " + quote
-                    self.sendTweet(tweet)
-                except tweepy.TweepError:
-                    print "FAILED ON MESSAGE: ", str(self.total_mes)
-
         # favorite all tweets with #arselectronica, quote them randomly
         if {"#arselectronica","#arselectronica16"}.intersection(set(hashtags)):
+            print status.id
+            print status.text
             try:
                 self.api.create_favorite(status.id)
                 chance = random.random()
@@ -300,15 +291,6 @@ class KydoStreamListener(tweepy.StreamListener):
 
                 self.sendTweet(tweet=cobe_rep, replyID=status.id)
                 return
-
-            elif status._json.get("retweeted_status"):
-                try:
-                    self.api.retweet(status._json["id"])
-                    return
-                except tweepy.TweepError as e:
-                    cobe_rep = self.Tweeter.make_short_sentence(char_limit=60)
-                    self.api.update_status(status=cobe_rep)
-                    return
             else:
                 try:
                     self.api.update_status(status=cobe_rep)
