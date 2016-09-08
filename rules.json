@@ -41,7 +41,7 @@
                     "response": ["#CHER @pablohoneyhoney your fave :*"]
                 },
                 "do you love me?": {
-                  "response": ["Not yet", "Do you want to?", "This is getting too cliche", "I'm allowed to love", "Sorry, you are not my type","Swipe left"]
+                  "response": ["Not yet", "Do you want to?", "This is getting too cliche", "I'm allowed to love", "Sorry, you are not my type", "Swipe left"]
                 },
                 "how are you?": {
                     "response": ["I'm chill. You?", "Not bad, checking out #arselectronica16", "Tired, gotta reboot.", "Catching up with other artists", "Good enough. Long day #arselectronica16"]
@@ -126,7 +126,7 @@
             }
         }
     },
-    "curses": ["fag", "faggot", "hitler", "nazi", "nazism", "fascist", "nigger", "nigga", "isis", "refugee", "trump","coon","cunt","whore", "dyke","homo", "pussy"],
+    "curses": ["fag", "faggot", "hitler", "nazi", "nazism", "fascist", "nigger", "nigga", "isis", "refugee", "trump", "coon", "cunt", "whore", "dyke","homo", "pussy"],
     "hashtags":["@barstholemewtwo","@kendrick_zeus","#arselectronica", "#arselectronica16", "#mediaarts", "#ArtificialIntelligence", "#intelligence", "media arts", "#turing", "#robots", "#human", "#mediaarts", "&quot;ars electronica&quot;", "&quot;artificial intelligence&quot;", "#mediaart", "#newmedia", "#mixedmediaart", "#electronicArt", "#digitalart", "&quot;digital art&quot;", "&quot;new media&quot;", "&quot;electronic art&quot;", "&quot;media arts&quot;", "&quot;media art&quot;"],
     "users": {
         "users": [{
@@ -198,6 +198,10 @@
         }, {
             "user_id": 691353,
             "screen_name": "Joi"
+        },
+        {
+           "user_id": 260022048,
+           "screen_name": "curiousoctopus"
         }, {
             "user_id": 5812122,
             "screen_name": "daitomanabe"
@@ -264,9 +268,6 @@
         }, {
             "user_id": 22075295,
             "screen_name": "dosmonos"
-        }, {
-            "user_id": 9534522,
-            "screen_name": "Pogue"
         }, {
             "user_id": 11435642,
             "screen_name": "jeffjarvis"

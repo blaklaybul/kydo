@@ -17,12 +17,12 @@ application.threaded = True
 application.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(application) #, logger = True, engineio_logger = True)
 
-consumer_key = 'FKYiQ0Hwmg2tmicDzn43Gd2fi'
-consumer_secret = 'KZuBQAzZzr2mLohkT22i8WuUmcrtsFTwcrA2GwnVYrlIk1xGuN'
-access_token = '772181462066012160-tLNrMb10touyHITYRWNHcVKqrbgIGv5'
-access_token_secret = 'LyFkCjNN8rNLQKB6yBnwkfHVwQhZxVA5cemPfUVmWFtoX'
-account_name = "kendrick_zeus"
-followee = "barstholemewtwo"
+consumer_key = 'NH6mklWRmRQrWc7IijTQ5ABBC'
+consumer_secret = 'YLs0gAOPiUfCF5ae6HqqRE3xhkowcX80mFrOmbmnQSWVryJ2ho'
+access_token = '23085248-aZyDkqk9pE9jyGEmLC58R815LGdjkPTRSaIszfqI6'
+access_token_secret = 'IkakFep0TBhIpbzIVJNxlofQyH0TPIyQiHB6kFBDeeZfY'
+account_name = "hellokydo"
+followee = "arselectronica"
 
 # probability that kydo will like a tweet, 1-this is prob he will quote it
 favorite_chance = 0.35
@@ -51,8 +51,8 @@ class TimedTweets(object):
         # set the interval, in seconds
         self.interval = interval
         self.api = api
-        self.randomInterval = 1800 # one hour
-        self.pseudoInterval = 3600 # half hour
+        self.randomInterval = 1800 # half hour
+        self.pseudoInterval = 3600 # one hour
         thread = threading.Thread(target=self.run)
         thread.start()
 
@@ -160,7 +160,7 @@ class KydoStreamListener(tweepy.StreamListener):
         ### START   PROACTIVITY ###
 
         # change value to determine frequency of tweets. This will respond to ~0.5% of incoming tweets.
-        if FOR_TESTING < 0.003:
+        if FOR_TESTING < 0.004:
             try:
                 cobe_rep = HTMLParser.HTMLParser().unescape(self.brain.reply(status.text.encode("utf-8"), max_len = 50))
                 quote = "https://twitter.com/"+status.user.screen_name+"/status/" + str(status.id)
